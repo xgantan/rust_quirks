@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 console = "0.15.7"
 dialoguer = { version = "0.10.4", features = ["fuzzy-select", "fuzzy-matcher"] }
+tokio = { version = "1.32.0", features = ["full", "rt"] }
