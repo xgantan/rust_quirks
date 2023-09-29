@@ -179,3 +179,64 @@ pub const stackoverflow_fixed: Function = Function {
         Ok(())
     },
 };
+
+struct Message {
+    id: u8,
+    value: u16,
+}
+
+pub const struct_size: Function = Function {
+    name: "Struct Size",
+    execute: || -> std::io::Result<()> {
+        let stdout = Term::stdout();
+        stdout.write_line("\
+            What's the output of the following program?\
+            \n\
+            \nstruct Message {\
+            \n    id: u8,\
+            \n    value: u16,\
+            \n}\
+            \n\
+            \nfn main() {\
+            \n    println!(\"The size of a Message is {}\", std::mem::size_of::<Message>());\
+            \n}\n\
+            ")?;
+        std::io::stdin().read(&mut [0u8]).expect("Unable to read stdin");
+        println!("The size of a Message struct is {}", std::mem::size_of::<Message>());
+        println!("\
+            \nFor structs, the size is determined by the following algorithm.\
+            \nFor each field in the struct ordered by declaration order:\
+            \n1. Add the size of the field.\
+            \n2. Round up the current size to the nearest multiple of the next field’s alignment.\
+            \n3. Round the size of the struct to the nearest multiple of its alignment. The alignment of the struct is usually the largest alignment of all its fields.\
+        \n");
+
+        Ok(())
+    },
+};
+
+struct EmptyMessage {}
+
+pub const empty_struct_size: Function = Function {
+    name: "Empty Struct Size",
+    execute: || -> std::io::Result<()> {
+        let stdout = Term::stdout();
+        stdout.write_line("\
+            What's the output of the following program?\
+            \n\
+            \nstruct EmptyMessage {\
+            \n}\
+            \n\
+            \nfn main() {\
+            \n    println!(\"The size of an EmptyMessage is {}\", std::mem::size_of::<EmptyMessage>());\
+            \n}\n\
+            ")?;
+        std::io::stdin().read(&mut [0u8]).expect("Unable to read stdin");
+        println!("The size of a Message struct is {}", std::mem::size_of::<EmptyMessage>());
+        println!("\
+            \nUnlike C, zero sized structs are not rounded up to one byte in size.\
+        ");
+
+        Ok(())
+    },
+};

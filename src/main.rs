@@ -1,12 +1,13 @@
 mod functions;
 
+use std::io::empty;
 use functions::Function;
 use dialoguer::{
     FuzzySelect,
     theme::ColorfulTheme,
 };
 use console::{style, Term};
-use crate::functions::{input_parsing, input_parsing_explained, input_parsing_fixed, ord_float, ord_int, stackoverflow, stackoverflow_fixed};
+use crate::functions::{empty_struct_size, input_parsing, input_parsing_explained, input_parsing_fixed, ord_float, ord_int, stackoverflow, stackoverflow_fixed, struct_size};
 
 struct Quirk<'a> {
     name: &'a str,
@@ -17,16 +18,20 @@ fn main() {
     let items = vec![
         Quirk {
             name: "Input End-of-line Parsing",
-            func: input_string_parsing,
+            func: input_string_parsing_demo,
         },
         Quirk {
             name: "Sort",
-            func: ord_trait_numbers,
+            func: ord_trait_demo,
         },
         Quirk {
             name: "Stackoverflow",
             func: stackoverflow_demo,
         },
+        Quirk {
+            name: "Struct Size",
+            func: struct_demo,
+        }
     ];
     loop {
         let selection = FuzzySelect::with_theme(&ColorfulTheme::default())
@@ -43,18 +48,23 @@ fn main() {
     }
 }
 
-fn input_string_parsing() -> std::io::Result<()> {
+fn input_string_parsing_demo() -> std::io::Result<()> {
     let items = vec![input_parsing, input_parsing_explained, input_parsing_fixed];
     select(items)
 }
 
-fn ord_trait_numbers() -> std::io::Result<()> {
+fn ord_trait_demo() -> std::io::Result<()> {
     let items = vec![ord_int, ord_float];
     select(items)
 }
 
 fn stackoverflow_demo() -> std::io::Result<()> {
     let items = vec![stackoverflow, stackoverflow_fixed];
+    select(items)
+}
+
+fn struct_demo() -> std::io::Result<()> {
+    let items = vec![struct_size, empty_struct_size];
     select(items)
 }
 
