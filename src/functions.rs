@@ -396,3 +396,25 @@ pub const async_v_threaded_native_threads: Function = Function {
         Ok(())
     }
 };
+
+fn weird_func() {
+    ..;
+}
+
+pub const weird: Function = Function {
+    name: "Weird",
+    execute: || -> std::io::Result<()> {
+        let stdout = Term::stdout();
+        stdout.write_line("\
+            What's the output of the following program?\
+            \n\
+            \nfn main() {\
+            \n  ..;\
+            \n}\
+        \n")?;
+        std::io::stdin().read(&mut [0u8]).expect("Unable to read stdin");
+        weird_func();
+
+        Ok(())
+    }
+};
