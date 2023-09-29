@@ -1,3 +1,4 @@
+#![feature(async_closure, future_join)]
 mod functions;
 
 use std::io::empty;
@@ -7,7 +8,7 @@ use dialoguer::{
     theme::ColorfulTheme,
 };
 use console::{style, Term};
-use crate::functions::{empty_struct_size, input_parsing, input_parsing_explained, input_parsing_fixed, ord_float, ord_int, stackoverflow, stackoverflow_fixed, struct_size};
+use crate::functions::{answer_to_the_great_question, async_v_threaded_native_threads, async_v_threaded_tokio, empty_struct_size, input_parsing, input_parsing_explained, input_parsing_fixed, ord_float, ord_int, stackoverflow, stackoverflow_fixed, struct_size};
 
 struct Quirk<'a> {
     name: &'a str,
@@ -21,6 +22,10 @@ fn main() {
             func: input_string_parsing_demo,
         },
         Quirk {
+            name: "Mutable Immutable",
+            func: mutable_immutable_demo,
+        },
+        Quirk {
             name: "Sort",
             func: ord_trait_demo,
         },
@@ -31,6 +36,10 @@ fn main() {
         Quirk {
             name: "Struct Size",
             func: struct_demo,
+        },
+        Quirk {
+            name: "Async v. Threaded",
+            func: async_v_threaded_demo,
         }
     ];
     loop {
@@ -65,6 +74,16 @@ fn stackoverflow_demo() -> std::io::Result<()> {
 
 fn struct_demo() -> std::io::Result<()> {
     let items = vec![struct_size, empty_struct_size];
+    select(items)
+}
+
+fn mutable_immutable_demo() -> std::io::Result<()> {
+    let items = vec![answer_to_the_great_question];
+    select(items)
+}
+
+fn async_v_threaded_demo() -> std::io::Result<()> {
+    let items = vec![async_v_threaded_tokio, async_v_threaded_native_threads];
     select(items)
 }
 

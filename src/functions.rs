@@ -1,10 +1,11 @@
 use std::cmp::Ordering::Less;
-use std::f32::NAN;
 use std::io::Read;
 use std::thread;
+use std::time::Duration;
 
 use console::style;
 use console::Term;
+use tokio::join;
 
 pub struct Function<'a> {
     pub name: &'a str,
@@ -239,4 +240,116 @@ pub const empty_struct_size: Function = Function {
 
         Ok(())
     },
+};
+
+pub const answer_to_the_great_question: Function = Function {
+    name: "Answer to the Great Question",
+    execute: || -> std::io::Result<()> {
+        let stdout = Term::stdout();
+        stdout.write_line("\
+            What's the answer to the great question of life, the universe and everything?\
+            \n\
+            \nfn main() {\
+            \n    let answer = &mut 41;\
+            \n    *answer += 1;\
+            \n    println!(\"The answer to the great question of life, the universe and everything is {}\", answer);\
+            \n}\n\
+            ")?;
+        std::io::stdin().read(&mut [0u8]).expect("Unable to read stdin");
+        let answer = &mut 41;
+        *answer += 1;
+        println!("The answer to the great question of life, the universe and everything is {}", style(answer).bold().green());
+
+        Ok(())
+    },
+};
+
+async fn task(n: u64) {
+    println!("Starting {}", n);
+    thread::sleep(Duration::from_millis(n * 100));
+    println!("Ending {}", n);
+}
+
+#[tokio::main]
+async fn tokio() {
+    join!(
+        task(1),
+        task(2),
+        task(3),
+    );
+}
+
+pub const async_v_threaded_tokio: Function = Function {
+    name: "Future Join",
+    execute: || -> std::io::Result<()> {
+        let stdout = Term::stdout();
+        stdout.write_line("\
+            What's the output of the following program?\
+            \n\
+            \nuse tokio::join;\
+            \nuse std::time::Duration;\
+            \n\
+            \n#[tokio::main]\
+            \nasync fn main() {\
+            \n  join!(task(1), task(2), task(3));\
+            \n  Ok(())\
+            \n}\n\
+            \n\
+            \nasync fn task(n: u64) {\
+            \n  println!(\"Starting {}\", n);\
+            \n  std::thread::sleep(Duration::from_millis(n * 100));\
+            \n  println!(\"Ending {}\", n);\
+            \n}\
+            ")?;
+        std::io::stdin().read(&mut [0u8]).expect("Unable to read stdin");
+        tokio();
+
+        Ok(())
+    } };
+
+fn sync_task(n: u64) {
+    println!("Starting {}", n);
+    thread::sleep(Duration::from_millis(n * 100));
+    println!("Ending {}", n);
+}
+
+pub const async_v_threaded_native_threads: Function = Function {
+    name: "Native Threads",
+    execute: || -> std::io::Result<()> {
+        let stdout = Term::stdout();
+        stdout.write_line("\
+            What's the output of the following program?\
+            \n\
+            \nuse std::thread;\
+            \nuse std::time::Duration;\
+            \n\
+            \nfn main() {\
+            \n  let handles = vec![\
+            \n    thread::spawn(|| sync_task(1)),\
+            \n    thread::spawn(|| sync_task(2)),\
+            \n    thread::spawn(|| sync_task(3)),\
+            \n  ];\
+            \n  for handle in handles {\
+            \n    handle.join().unwrap();\
+            \n  }\
+            \n}\n\
+            \n\
+            \nfn sync_task(n: u64) {\
+            \n  println!(\"Starting {}\", n);\
+            \n  std::thread::sleep(Duration::from_millis(n * 100));\
+            \n  println!(\"Ending {}\", n);\
+            \n}\
+            ")?;
+        std::io::stdin().read(&mut [0u8]).expect("Unable to read stdin");
+        let handles = vec![
+            thread::spawn(|| sync_task(1)),
+            thread::spawn(|| sync_task(2)),
+            thread::spawn(|| sync_task(3)),
+        ];
+        for handle in handles {
+            handle.join().unwrap();
+        }
+
+        Ok(())
+    }
 };
