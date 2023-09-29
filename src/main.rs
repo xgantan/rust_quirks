@@ -7,7 +7,7 @@ use dialoguer::{
     theme::ColorfulTheme,
 };
 use console::{style, Term};
-use crate::functions::{answer_to_the_great_question, async_v_threaded_native_threads, async_v_threaded_tokio, async_v_threaded_tokio_fixed, empty_struct_size, input_parsing, input_parsing_explained, input_parsing_fixed, ord_float, ord_int, stackoverflow, stackoverflow_fixed, struct_size};
+use crate::functions::{answer_to_the_great_question, async_v_threaded_native_threads, async_v_threaded_tokio, async_v_threaded_tokio_fixed, empty_struct_size, input_parsing, input_parsing_explained, input_parsing_fixed, ord_float, ord_int, stackoverflow, stackoverflow_fixed, struct_size, weird};
 
 struct Quirk<'a> {
     name: &'a str,
@@ -39,6 +39,10 @@ fn main() {
         Quirk {
             name: "Async v. Threaded",
             func: async_v_threaded_demo,
+        },
+        Quirk {
+            name: "Weird",
+            func: weird_demo,
         }
     ];
     loop {
@@ -83,6 +87,11 @@ fn mutable_immutable_demo() -> std::io::Result<()> {
 
 fn async_v_threaded_demo() -> std::io::Result<()> {
     let items = vec![async_v_threaded_tokio, async_v_threaded_tokio_fixed, async_v_threaded_native_threads];
+    select(items)
+}
+
+fn weird_demo() -> std::io::Result<()> {
+    let items = vec![weird];
     select(items)
 }
 
