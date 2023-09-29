@@ -279,8 +279,23 @@ async fn tokio() {
     );
 }
 
+async fn task_fixed(n: u64) {
+    println!("Starting {}", n);
+    tokio::time::sleep(Duration::from_millis(n * 100)).await;
+    println!("Ending {}", n);
+}
+
+#[tokio::main]
+async fn tokio_fixed() {
+    join!(
+        task_fixed(1),
+        task_fixed(2),
+        task_fixed(3),
+    );
+}
+
 pub const async_v_threaded_tokio: Function = Function {
-    name: "Future Join",
+    name: "Tokio Join Blocking",
     execute: || -> std::io::Result<()> {
         let stdout = Term::stdout();
         stdout.write_line("\
@@ -303,6 +318,34 @@ pub const async_v_threaded_tokio: Function = Function {
             ")?;
         std::io::stdin().read(&mut [0u8]).expect("Unable to read stdin");
         tokio();
+
+        Ok(())
+    } };
+
+pub const async_v_threaded_tokio_fixed: Function = Function {
+    name: "Tokio Join Non-Blocking",
+    execute: || -> std::io::Result<()> {
+        let stdout = Term::stdout();
+        stdout.write_line("\
+            What's the output of the following program?\
+            \n\
+            \nuse tokio::join;\
+            \nuse std::time::Duration;\
+            \n\
+            \n#[tokio::main]\
+            \nasync fn main() {\
+            \n  join!(task(1), task(2), task(3));\
+            \n  Ok(())\
+            \n}\n\
+            \n\
+            \nasync fn task(n: u64) {\
+            \n  println!(\"Starting {}\", n);\
+            \n  tokio::time::sleep(Duration::from_millis(n * 100)).await;\
+            \n  println!(\"Ending {}\", n);\
+            \n}\
+            ")?;
+        std::io::stdin().read(&mut [0u8]).expect("Unable to read stdin");
+        tokio_fixed();
 
         Ok(())
     } };
