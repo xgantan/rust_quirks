@@ -1,4 +1,3 @@
-#![feature(async_closure, future_join)]
 mod functions;
 
 use std::io::empty;
@@ -8,7 +7,7 @@ use dialoguer::{
     theme::ColorfulTheme,
 };
 use console::{style, Term};
-use crate::functions::{answer_to_the_great_question, async_v_threaded_native_threads, async_v_threaded_tokio, empty_struct_size, input_parsing, input_parsing_explained, input_parsing_fixed, ord_float, ord_int, stackoverflow, stackoverflow_fixed, struct_size};
+use crate::functions::{answer_to_the_great_question, async_v_threaded_native_threads, async_v_threaded_tokio, async_v_threaded_tokio_fixed, empty_struct_size, input_parsing, input_parsing_explained, input_parsing_fixed, ord_float, ord_int, stackoverflow, stackoverflow_fixed, struct_size};
 
 struct Quirk<'a> {
     name: &'a str,
@@ -83,7 +82,7 @@ fn mutable_immutable_demo() -> std::io::Result<()> {
 }
 
 fn async_v_threaded_demo() -> std::io::Result<()> {
-    let items = vec![async_v_threaded_tokio, async_v_threaded_native_threads];
+    let items = vec![async_v_threaded_tokio, async_v_threaded_tokio_fixed, async_v_threaded_native_threads];
     select(items)
 }
 
