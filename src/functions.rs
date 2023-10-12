@@ -1,6 +1,8 @@
+use std::cell::RefCell;
 use std::cmp::Ordering::Less;
 use std::io::Read;
 use std::thread;
+use std::thread::sleep;
 use std::time::Duration;
 
 use console::style;
@@ -153,9 +155,10 @@ pub const stackoverflow: Function = Function {
             \n    println!(\"{}\", c.len());\
             \n}\n
             ")?;
-        std::io::stdin().read(&mut [0u8]).expect("Unable to read stdin");
-        let c = Box::new([0f64; 100_000_000]);
-        println!("{}", c.len());
+        thread::spawn(|| {
+            let c = Box::new([0f64; 100_000_000]);
+            println!("{}", c.len());
+        });
 
         Ok(())
     },
